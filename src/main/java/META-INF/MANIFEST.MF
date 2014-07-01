@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Class-Path: neo4j-2.1.1.jar neo4j-cypher-compiler-2.1-2.1.1.jar neo4j-
+ cypher-compiler-1.9-2.0.1.jar neo4j-udc-2.1.1.jar neo4j-cypher-2.1.1.
+ jar neo4j-cypher-compiler-2.0-2.0.1.jar opencsv-2.3.jar lucene-core-3
+ .6.2.jar jsr311-api-1.1.2.r612.jar commons-collections-3.2.1.jar neo4
+ j-graph-algo-2.1.1.jar parboiled-scala_2.10-1.1.6.jar commons-configu
+ ration-1.6.jar neo4j-jmx-2.1.1.jar commons-beanutils-core-1.8.0.jar c
+ ommons-beanutils-1.8.0.jar parboiled-core-1.1.6.jar neo4j-cypher-comm
+ ons-2.1.1.jar neo4j-graph-matching-2.1.1.jar commons-lang-2.4.jar neo
+ 4j-lucene-index-2.1.1.jar commons-logging-1.1.1.jar geronimo-jta_1.1_
+ spec-1.1.1.jar commons-digester-1.8.1.jar scala-library-2.10.4.jar ne
+ o4j-kernel-2.1.1.jar concurrentlinkedhashmap-lru-1.3.1.jar neo4j-prim
+ itive-collections-2.1.1.jar server-api-2.1.1.jar
+
