@@ -80,7 +80,7 @@ The server response will be similar to the following:
       "681 properties modified."
     ]
 
-If `output` is omitted, server will simply return the results to the rest client. 
+If `output` is omitted, server will simply return the results to the REST client. 
 
 ### To-Do
 
