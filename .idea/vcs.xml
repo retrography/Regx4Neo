@@ -2,7 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/out/artifacts/Text4Neo_jar" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/out/artifacts/Regx4Neo_jar" vcs="Git" />
   </component>
 </project>
 

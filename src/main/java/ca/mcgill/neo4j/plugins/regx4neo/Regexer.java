@@ -1,4 +1,4 @@
-package ca.mcgill.neo4j.plugins.text4neo;
+package ca.mcgill.neo4j.plugins.regx4neo;
 
 /**
  * Copyright (c) 2014 "Mahmood S. Zargar"
@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Description("An extension to the Neo4j Server that can run regex on node properties and return or save the results.")
-public class RegexRun extends ServerPlugin {
+public class Regexer extends ServerPlugin {
     @Name("rx_replace")
     @Description("Detects patterns in string properties, replaces them with a substitute string and returns or saves the resulting strings.")
     @PluginTarget(GraphDatabaseService.class)
@@ -51,16 +51,19 @@ public class RegexRun extends ServerPlugin {
     ) {
         ArrayList<String> results = new ArrayList<>();
         Label searchLabel = DynamicLabel.label(label);
+        Pattern pattern = Pattern.compile(statement);
         int count = 0;
 
         try (Transaction tx = graphDb.beginTx()) {
             for (Node node : GlobalGraphOperations.at(graphDb).getAllNodesWithLabel(searchLabel)) {
                 String result;
+                String property = node.getProperty(inProperty, "").toString();
+                Matcher matcher = pattern.matcher(property);
 
                 if (all == null || all) {
-                    result = node.getProperty(inProperty, "").toString().replaceAll(statement, replace);
+                    result = matcher.replaceAll(replace);
                 } else {
-                    result = node.getProperty(inProperty, "").toString().replaceFirst(statement, replace);
+                    result = matcher.replaceFirst(replace);
                 }
 
                 if (!result.isEmpty()) {
@@ -163,9 +166,8 @@ public class RegexRun extends ServerPlugin {
                 }
 
                 if (!(outProperty == null) && !(outProperty.isEmpty())) {
-                    if (matchesList.size() == 0 || matchesList.contains(innerCount)) {
+                    if (result.size() > 0) {
                         String[] tmpArr = result.toArray(new String[result.size()]);
-                        ;
                         node.setProperty(outProperty, tmpArr);
                         count++;
                     }

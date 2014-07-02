@@ -1,9 +1,9 @@
 <component name="ArtifactManager">
   <artifact name="Text4Neo:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Text4Neo_jar</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/RegxNeo_jar</output-path>
     <root id="root">
-      <element id="archive" name="Text4Neo.jar">
-        <element id="module-output" name="Text4Neo" />
+      <element id="archive" name="Regx4Neo.jar">
+        <element id="module-output" name="Regx4Neo" />
       </element>
     </root>
   </artifact>

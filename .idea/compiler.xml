@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="Text4Neo" />
+        <module name="Regx4Neo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Text4Neo" target="1.7" />
+      <module name="Regx4Neo" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
