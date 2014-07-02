@@ -90,5 +90,5 @@ If `output` is omitted, server will simply return the results to the REST client
 4. Accept relationships and relationship properties
 
 
-  [1]: https://github.com/mszargar/Regx4Neo/releases/download/v1.0.0/regx4neo-1.0.0.jar
+  [1]: https://github.com/mszargar/Regx4Neo/releases
   [2]: http://docs.neo4j.org/chunked/stable/server-plugins.html
