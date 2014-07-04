@@ -68,12 +68,12 @@ public class Regexer extends ServerPlugin {
                     result = matcher.replaceFirst(replace);
                 }
 
-                    if (!(outProperty == null) && !(outProperty.isEmpty())) {
-                        node.setProperty(outProperty, result);
-                        count++;
-                    } else {
-                        results.add(result);
-                    }
+                if (!(outProperty == null) && !(outProperty.isEmpty())) {
+                    node.setProperty(outProperty, result);
+                    count++;
+                } else {
+                    results.add(result);
+                }
             }
             tx.success();
 
@@ -214,7 +214,7 @@ public class Regexer extends ServerPlugin {
                     node.setProperty(outProperty, result);
                     count++;
                 } else {
-                    // This does not return a real Json. Requires a generalized list-of-list representation object to get there.
+                    // TODO: This does not return a real Json. Requires a generalized list-of-list representation object to get there.
                     results.add(result);
                 }
             }
@@ -259,7 +259,6 @@ public class Regexer extends ServerPlugin {
         Label searchLabel = DynamicLabel.label(label);
         Pattern ptSpace = Pattern.compile("(\\p{P}|\\s)+");
         Pattern ptRemove = Pattern.compile(removeStr);
-
 
         int count = 0;
 
