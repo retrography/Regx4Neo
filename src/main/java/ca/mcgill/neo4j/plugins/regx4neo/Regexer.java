@@ -27,6 +27,7 @@ import org.neo4j.tooling.GlobalGraphOperations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,7 @@ public class Regexer extends ServerPlugin {
             @Parameter(name = "statement", optional = false) String statement,
             @Description("The string with which you want to replace the pattern.")
             @Parameter(name = "replacement", optional = false) String replace,
-            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Description("The property to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
             @Parameter(name = "output", optional = true) String outProperty,
             @Description("Whether all the instances of the pattern should be replaced. Defaults to true.")
             @Parameter(name = "replaceall", optional = true) Boolean all
@@ -94,7 +95,7 @@ public class Regexer extends ServerPlugin {
             @Parameter(name = "property", optional = false) String inProperty,
             @Description("The regex statement to identify the split points (Java string formatted).")
             @Parameter(name = "statement", optional = false) String statement,
-            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Description("The property to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
             @Parameter(name = "output", optional = true) String outProperty,
             @Description("Limit for the number of times the regex is applied.")
             @Parameter(name = "limit", optional = true) Integer limit
@@ -138,7 +139,7 @@ public class Regexer extends ServerPlugin {
             @Parameter(name = "property", optional = false) String inProperty,
             @Description("The regex statement to identify the patterns (Java string formatted).")
             @Parameter(name = "statement", optional = false) String statement,
-            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Description("The property to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
             @Parameter(name = "output", optional = true) String outProperty,
             @Description("The index of the matches to be returned. By default this array is empty and all the matches are returned.")
             @Parameter(name = "matches", optional = true) Integer[] matches
@@ -196,7 +197,7 @@ public class Regexer extends ServerPlugin {
             @Parameter(name = "label", optional = false) String label,
             @Description("The property you would like to transliterate.")
             @Parameter(name = "property", optional = false) String inProperty,
-            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Description("The property to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
             @Parameter(name = "output", optional = true) String outProperty
     ) {
         ArrayList<String> results = new ArrayList<>();
@@ -237,7 +238,7 @@ public class Regexer extends ServerPlugin {
             @Parameter(name = "label", optional = false) String label,
             @Description("The property on which you would like to run the regexp statement.")
             @Parameter(name = "property", optional = false) String inProperty,
-            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Description("The property to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
             @Parameter(name = "output", optional = true) String outProperty,
             @Description("Defines whether numbers should be removed as well (false by default).")
             @Parameter(name = "numbers", optional = true) Boolean numbers,
@@ -250,14 +251,15 @@ public class Regexer extends ServerPlugin {
         spaces = spaces == null ? false : spaces;
         lower = lower == null ? false : lower;
 
-        String removeStr = "[^A-Za-z]";
-        if (!numbers) removeStr.concat("0-9");
-        if (!spaces) removeStr.concat(" ");
+        String removeStr = "[^A-Za-z0-9 ]+";
+        if (numbers) removeStr.replace("0-9", "");
+        if (spaces) removeStr.replace(" ", "");
 
         ArrayList<String> results = new ArrayList<>();
         Label searchLabel = DynamicLabel.label(label);
-        Pattern ptSpace = Pattern.compile("\\p{P}|\\s");
+        Pattern ptSpace = Pattern.compile("(\\p{P}|\\s)+");
         Pattern ptRemove = Pattern.compile(removeStr);
+
 
         int count = 0;
 
@@ -277,7 +279,7 @@ public class Regexer extends ServerPlugin {
 
                 result.trim();
 
-                if (lower) result.toLowerCase();
+                result = lower == true ? result.toLowerCase(Locale.ENGLISH) : result;
 
                 if (!(outProperty == null) && !(outProperty.isEmpty())) {
                     node.setProperty(outProperty, result);
