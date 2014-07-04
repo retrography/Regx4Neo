@@ -40,6 +40,7 @@
     <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-cypher-compiler-2.1:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-jmx:2.1.2" level="project" />
+    <orderEntry type="library" name="Maven: me.xuender:unidecode:0.0.7" level="project" />
   </component>
 </module>
 

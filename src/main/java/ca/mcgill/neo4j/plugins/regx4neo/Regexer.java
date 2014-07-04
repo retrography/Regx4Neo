@@ -19,6 +19,7 @@ package ca.mcgill.neo4j.plugins.regx4neo;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import me.xuender.unidecode.Unidecode;
 import org.neo4j.graphdb.*;
 import org.neo4j.server.plugins.*;
 import org.neo4j.tooling.GlobalGraphOperations;
@@ -66,14 +67,12 @@ public class Regexer extends ServerPlugin {
                     result = matcher.replaceFirst(replace);
                 }
 
-                if (!result.isEmpty()) {
                     if (!(outProperty == null) && !(outProperty.isEmpty())) {
                         node.setProperty(outProperty, result);
                         count++;
                     } else {
                         results.add(result);
                     }
-                }
             }
             tx.success();
 
@@ -187,5 +186,114 @@ public class Regexer extends ServerPlugin {
         }
         return results;
     }
+
+    @Name("uc_unide")
+    @Description("Transliterates unicode characters into their ASCII equivalent using Unidecode library.")
+    @PluginTarget(GraphDatabaseService.class)
+    public Iterable<String> ucUnide(
+            @Source GraphDatabaseService graphDb,
+            @Description("The label by which nodes should be filtered.")
+            @Parameter(name = "label", optional = false) String label,
+            @Description("The property you would like to transliterate.")
+            @Parameter(name = "property", optional = false) String inProperty,
+            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Parameter(name = "output", optional = true) String outProperty
+    ) {
+        ArrayList<String> results = new ArrayList<>();
+        Label searchLabel = DynamicLabel.label(label);
+        int count = 0;
+
+        try (Transaction tx = graphDb.beginTx()) {
+            for (Node node : GlobalGraphOperations.at(graphDb).getAllNodesWithLabel(searchLabel)) {
+                String property = node.getProperty(inProperty, "").toString();
+
+                String result = Unidecode.decode(property);
+
+                if (!(outProperty == null) && !(outProperty.isEmpty())) {
+                    node.setProperty(outProperty, result);
+                    count++;
+                } else {
+                    // This does not return a real Json. Requires a generalized list-of-list representation object to get there.
+                    results.add(result);
+                }
+            }
+
+            tx.success();
+
+        }
+        if (count > 0) {
+            results.add(count + " properties modified.");
+        }
+        return results;
+    }
+
+
+    @Name("uc_debone")
+    @Description("Detects patterns in string properties, replaces them with a substitute string and returns or saves the resulting strings. In combination with Unide this can be used to provide the right tokens to make suggestions such as email address suggestions for users.")
+    @PluginTarget(GraphDatabaseService.class)
+    public Iterable<String> ucDebone(
+            @Source GraphDatabaseService graphDb,
+            @Description("The label by which nodes should be filtered.")
+            @Parameter(name = "label", optional = false) String label,
+            @Description("The property on which you would like to run the regexp statement.")
+            @Parameter(name = "property", optional = false) String inProperty,
+            @Description("The node to which you would like to write the results. By default this parameter is empty and the data is returned instead of being saved.")
+            @Parameter(name = "output", optional = true) String outProperty,
+            @Description("Defines whether numbers should be removed as well (false by default).")
+            @Parameter(name = "numbers", optional = true) Boolean numbers,
+            @Description("Defines whether spaces should be removed as well (false by default).")
+            @Parameter(name = "spaces", optional = true) Boolean spaces,
+            @Description("Whether you would like the sentence to be converted to lowercase a well.")
+            @Parameter(name = "lower", optional = true) Boolean lower
+    ) {
+        numbers = numbers == null ? false : numbers;
+        spaces = spaces == null ? false : spaces;
+        lower = lower == null ? false : lower;
+
+        String removeStr = "[^A-Za-z]";
+        if (!numbers) removeStr.concat("0-9");
+        if (!spaces) removeStr.concat(" ");
+
+        ArrayList<String> results = new ArrayList<>();
+        Label searchLabel = DynamicLabel.label(label);
+        Pattern ptSpace = Pattern.compile("\\p{P}|\\s");
+        Pattern ptRemove = Pattern.compile(removeStr);
+
+        int count = 0;
+
+        try (Transaction tx = graphDb.beginTx()) {
+            for (Node node : GlobalGraphOperations.at(graphDb).getAllNodesWithLabel(searchLabel)) {
+
+                String property = node.getProperty(inProperty, "").toString();
+
+                Matcher matcher = ptSpace.matcher(property);
+                String result = matcher.replaceAll(" ");
+
+                matcher = ptRemove.matcher(result);
+                result = matcher.replaceAll("");
+
+                matcher = ptSpace.matcher(result);
+                result = matcher.replaceAll(" ");
+
+                result.trim();
+
+                if (lower) result.toLowerCase();
+
+                if (!(outProperty == null) && !(outProperty.isEmpty())) {
+                    node.setProperty(outProperty, result);
+                    count++;
+                } else {
+                    results.add(result);
+                }
+            }
+            tx.success();
+
+        }
+        if (count > 0) {
+            results.add(count + " properties modified.");
+        }
+        return results;
+    }
+
 
 }
